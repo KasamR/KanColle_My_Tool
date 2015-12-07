@@ -96,7 +96,7 @@ MODE:
 		cin >> ok;
 		if (ok == "ok") endCheck = false;
 	}
-	ofstream ofs("C:\\Users\\‰´\\Desktop\\Sets.txt", ios::out);
+	ofstream ofs("C:\\Users\\usr\\Desktop\\Sets.txt", ios::out);
 	for (int i = 0; i < sally; i++){
 		ofs << names[i] << " ‚Ì‘•”õ" << endl;
 		for (int j = 0; j < 4; j++){
