@@ -16,7 +16,7 @@ string names[6] = {}; //出撃する艦娘のリスト
 int sally; //出撃する艦娘の数(sally...出撃の意)
 int mode = 0; //モード選択の変数
 int seiku = 0; //目標制空値の変数
-bool roop = true; //ループ制御の変数
+bool loop = true; //ループ制御の変数
 int aircommand = 0; //計算中の制空値
 int inwepon = 0; //武器の装備数
 Fighter fi[8] = {}; //艦載機のクラス
@@ -79,7 +79,7 @@ MODE:
 		goto MODE;
 		break;
 	}
-	roop = true; //修正の時にちゃんと使えるように
+	loop = true; //修正の時にちゃんと使えるように
 	/* モード選択のOWARI */
 
 	/* 手動修正モードのSENTAKU */
@@ -96,6 +96,26 @@ MODE:
 		cin >> ok;
 		if (ok == "ok") endCheck = false;
 	}
+	ofstream ofs("C:\\Users\\俺\\Desktop\\Sets.txt", ios::out);
+	for (int i = 0; i < sally; i++){
+		ofs << names[i] << " の装備" << endl;
+		for (int j = 0; j < 4; j++){
+			ofs << kms[names[i]][j] << ": ";
+			if (weponsName[i][j] == "" || wepons[i][j] == 0)weponsName[i][j] = "なし";
+			ofs << weponsName[i][j] << endl;
+		}
+	}
+	ofs << "制空値は " << aircommand << " です。" << endl;
+	for (int i = 0; i < sally; i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < fsize; k++){
+				if (weponsName[i][j] == fi[k].show_name() && fi[k].get_kind())
+					aircommand += 25;
+			}
+		}
+	}
+	ofs << "ボーナスを含めた制空値は " << aircommand << " です。" << endl;
+	return 0;
 } //mainのOWARI
 
 void ga(string* n, int sa){
@@ -108,7 +128,7 @@ void ga(string* n, int sa){
 	}
 	cout << "目標の制空値を入力して頂戴: ";
 	cin >> seiku;
-	while (roop){
+	while (loop){
 		int i = 0, j = 0;
 		int max = 0;
 		int mi = 0, mj = 0;
@@ -139,8 +159,8 @@ void ga(string* n, int sa){
 			}
 		}
 		/* 制空値との比較 */
-		if (seiku < aircommand) roop = false;
-		else if (inwepon == sa * 4) roop = false; //全積みだったら抜ける
+		if (seiku < aircommand) loop = false;
+		else if (inwepon == sa * 4) loop = false; //全積みだったら抜ける
 	}
 }
 
@@ -203,7 +223,7 @@ void my(string* n, int sa){
 		na[i] = *n;
 		++n;
 	}
-	while (roop){
+	while (loop){
 		int kanmusui; //入力された艦娘が何番目にいるかを保有
 		int kansaikii; //入力された艦載機が何番目にあるかを保有
 		int sloti; //入力されたスロットの場所を保有
@@ -225,33 +245,33 @@ void my(string* n, int sa){
 		}
 
 		/* 艦載機入力 */
-		while (roop){
+		while (loop){
 			cout << "どの艦載機を装備する?" << endl;
 			cin >> inName; //艦載機の名前入力
 			for (int i = 0; i < fsize; i++){
 				if (inName == fi[i].get_name()){
 					kansaikii = i;
-					roop = false;
+					loop = false;
 					break;
 				}
 				else kansaikii = 99;
 			}
 			if (inName == "out") {
-				roop = false;
+				loop = false;
 				kansaikii = 90;
 			}
 			if (kansaikii == 99 || fi[kansaikii].get_shojisu() <= 0){
 				cout << "不正な入力です。" << endl;
 			}
 		}
-		roop = true;
+		loop = true;
 
 		/* スロット入力 */
-		while (roop){
+		while (loop){
 			cout << "どのスロットに装備する?" << endl;
 			if (cin >> inslot)
 				if (1 <= inslot && inslot <= 4){
-					roop = false; //スロットの入力
+					loop = false; //スロットの入力
 				}
 				else cout << "不正な入力です" << endl;
 			else {
@@ -266,7 +286,7 @@ void my(string* n, int sa){
 					weponsName[kanmusui][sloti] = fi[i].show_name();
 			}
 		}
-		roop = true;
+		loop = true;
 		/* スロット入力終わり */
 
 		/* 装備をしているかどうかのチェック */
@@ -306,7 +326,7 @@ void my(string* n, int sa){
 		cout << "満足?(yes/no)" << endl;
 		string ok;
 		cin >> ok;
-		if (ok == "yes") roop = false;
+		if (ok == "yes") loop = false;
 	}
 }
 
