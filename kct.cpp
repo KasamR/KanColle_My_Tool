@@ -7,6 +7,7 @@ using namespace std;
 
 map<string, KM> kms;
 vector<AC> ac;
+AC dammy; //入力間違い用の適当定数
 void read() {
 	ifstream ifs("KMS_List");
 	string inpn = ""; //inputName
@@ -39,7 +40,7 @@ AC* vfind(vector<AC> a, string s) {
 	for (int i = 0; i < a.size(); i++) {
 		if (ac[i].inputName == s) return &ac[i];
 	}
-	return NULL;
+	return &dammy;
 }
 
 /* vectorに一致するsがあるかを調べ，boolを返す */
@@ -99,7 +100,8 @@ START:
 	printf("\n");
 
 	//間違いがないっぽいので装備
-	if (tempe == "out") (*vfind(ac, kms[tempn].eq[temps - 1].inputName)).all[2]++; //装備したものの所持数を減らす
+	if (tempe == "out") (*vfind(ac, kms[tempn].eq[temps - 1].inputName)).all[2]++; //装備してたのを増やす
+	if (kms[tempn].eq[temps-1].inputName != "out") (*vfind(ac, kms[tempn].eq[temps - 1].inputName)).all[2]++;//装備してたのを増やす
 	kms[tempn].eq[temps - 1] = (*vfind(ac, tempe));
 	(*vfind(ac, tempe)).all[2]--; //装備したものの所持数を減らす
 }
